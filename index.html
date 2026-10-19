@@ -139,8 +139,8 @@ section.block{padding-block:72px}
 .card .desc{color:var(--muted);font-size:.95rem}
 .card .chips{margin-top:auto}
 .tag{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
-@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}.card,.card.wide{grid-column:span 1}.card.wide.first{grid-column:span 2}}
-@media (max-width:620px){.grid{grid-template-columns:1fr}.card,.card.wide,.card.wide.first{grid-column:span 1}}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}.card,.card.wide{grid-column:span 1}.card.first{grid-column:span 2}}
+@media (max-width:620px){.grid{grid-template-columns:1fr}.card,.card.wide,.card.first{grid-column:span 1}}
 
 .exp{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--fg)}
 .exp article{padding:22px 22px 0 0;display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -334,25 +334,20 @@ footer{padding-block:0 40px;color:var(--muted);font-size:.85rem}
     <h2 class="sec-h">En desarrollo</h2>
     <p class="sec-p">Proyectos construidos o en marcha que todavía no tienen una versión pública que enseñar.</p>
     <div class="grid">
-      <article class="card wide dark">
+      <article class="card dark first">
         <div class="head"><h3>EquiMarket</h3><span class="tag">Marketplace</span></div>
         <p class="desc">Marketplace de caballos de deporte con fichas, genealogía, comparador, favoritos y chat entre comprador y vendedor.</p>
         <div class="chips"><span class="chip">Next.js 14</span><span class="chip">Firebase</span><span class="chip">Tailwind</span></div>
       </article>
-      <article class="card wide">
+      <article class="card">
         <div class="head"><h3>Web Woer</h3><span class="tag">Web de cliente</span></div>
         <p class="desc">Sitio para un distribuidor español de maquinaria Woer.</p>
         <div class="chips"><span class="chip">Next.js 14</span><span class="chip">Prisma</span></div>
       </article>
-      <article class="card wide">
+      <article class="card">
         <div class="head"><h3>JumpStats Pro</h3><span class="tag">Prototipo</span></div>
         <p class="desc">Estadísticas, rankings y calendario de salto de obstáculos.</p>
         <div class="chips"><span class="chip">JavaScript</span><span class="chip">Chart.js</span></div>
-      </article>
-      <article class="card wide">
-        <div class="head"><h3>Synergy 2026</h3><span class="tag">Evento</span></div>
-        <p class="desc">Landing de congreso en HTML y en Elementor, con el estilo de la edición anterior.</p>
-        <div class="chips"><span class="chip">HTML/CSS</span><span class="chip">Elementor</span></div>
       </article>
     </div>
   </section>
