@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Larabas Hadi · Desarrollador web en Gijón · Proyectos</title>
+<meta name="description" content="Larabas Hadi Blanco, desarrollador web en Gijón. Proyectos publicados en Next.js, Supabase y Firebase, SEO/SEM y ciberseguridad: SportMag Studio, Deep Saurio, Bahmu y más.">
+<link rel="canonical" href="https://larabasdesarrollo.github.io/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Larabas Hadi Blanco">
+<meta name="theme-color" content="#2343c4">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:url" content="https://larabasdesarrollo.github.io/">
+<meta property="og:title" content="Larabas Hadi · Desarrollador web en Gijón">
+<meta property="og:description" content="Larabas Hadi Blanco, desarrollador web en Gijón. Proyectos publicados en Next.js, Supabase y Firebase, SEO/SEM y ciberseguridad: SportMag Studio, Deep Saurio, Bahmu y más.">
+<meta property="og:image" content="https://larabasdesarrollo.github.io/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Larabas Hadi Blanco", "jobTitle": "Desarrollador web", "url": "https://larabasdesarrollo.github.io/", "email": "mailto:larabashadi@gmail.com", "address": {"@type": "PostalAddress", "addressLocality": "Gijón", "addressRegion": "Asturias", "addressCountry": "ES"}, "knowsAbout": ["Desarrollo web", "Next.js", "WordPress", "Supabase", "Firebase", "SEO", "SEM", "Ciberseguridad"], "knowsLanguage": ["es", "ar", "en"], "sameAs": ["https://github.com/larabasdesarrollo", "https://www.linkedin.com/in/larabas-hadi"]}</script>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,500;0,700;0,800;1,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left-aligned split hero, live-project carousel with real captures, one case study, asymmetric in-progress grid, experience rail, contact strip */
+:root{
+  --bg:#f2f3f0; --surface:#fafbf9; --fg:#14181d; --muted:#596169; --line:#d6d9d4;
+  --accent:#2343c4; --accent-ink:#ffffff; --tint:#e3e8f7; --frame:#e6e8e4;
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340; --frame:#20252d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340; --frame:#20252d; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.mono{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.02em}
+.muted{color:var(--muted)}
+
+nav.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:20px}
+nav.top .name{font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+nav.top ul{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+nav.top a{text-decoration:none;color:var(--muted);font-size:.92rem}
+nav.top a:hover{color:var(--fg)}
+@media (max-width:620px){nav.top ul{display:none}}
+
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:48px;align-items:end;padding-block:48px 56px;border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(2.4rem,5.4vw,4.3rem);line-height:1.04;font-weight:800}
+.hero h1 em{font-style:italic;color:var(--accent);padding-bottom:.05em}
+.hero .sub{margin-top:22px;font-size:1.12rem;color:var(--muted);max-width:44ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;white-space:nowrap;transition:transform .2s cubic-bezier(.16,1,.3,1),background .2s,border-color .2s}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:var(--line);color:var(--fg);background:transparent}
+.btn.ghost:hover{border-color:var(--fg)}
+.areas{display:grid;border-top:1px solid var(--line)}
+.areas div{display:grid;grid-template-columns:7.5rem 1fr;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.areas b{font-family:var(--f-display);font-weight:700}
+.areas span{color:var(--muted);font-size:.93rem}
+@media (max-width:860px){.hero{grid-template-columns:1fr;gap:36px;padding-block:28px 44px}}
+
+section.block{padding-block:72px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.sec-h{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800}
+.sec-p{margin-top:12px;color:var(--muted);max-width:60ch}
+
+/* carousel */
+.car-ctrl{display:flex;align-items:center;gap:10px}
+.car-ctrl button{width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:grid;place-items:center;font-size:1.1rem;transition:border-color .2s,transform .2s}
+.car-ctrl button:hover:not(:disabled){border-color:var(--fg)}
+.car-ctrl button:active:not(:disabled){transform:scale(.95)}
+.car-ctrl button:disabled{opacity:.35;cursor:default}
+.car-count{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:3.4rem;text-align:center}
+.track{margin-top:28px;display:grid;grid-auto-flow:column;grid-auto-columns:min(78%,860px);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:14px;scrollbar-width:thin;overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{height:6px}
+.track::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+.slide{scroll-snap-align:start;min-width:0;display:flex;flex-direction:column;gap:18px}
+.shot{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--frame);transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .35s}
+.shot:hover{transform:translateY(-4px);border-color:var(--muted);box-shadow:0 22px 48px -24px color-mix(in srgb,var(--fg) 45%,transparent)}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.bar .dots{display:flex;gap:6px}
+.bar .dots i{width:9px;height:9px;border-radius:999px;background:var(--line);display:block}
+.bar .url{flex:1;min-width:0;font-family:var(--f-mono);font-size:.74rem;color:var(--muted);background:var(--surface);border-radius:999px;padding:4px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .go{font-family:var(--f-mono);font-size:.74rem;color:var(--accent);white-space:nowrap}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:1200/568;object-fit:cover;object-position:top}
+.meta{display:grid;grid-template-columns:1fr auto;gap:8px 20px;align-items:start}
+.meta h3{font-size:1.45rem;font-weight:700}
+.meta p{grid-column:1/-1;color:var(--muted);max-width:62ch}
+.meta .kind{font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:8px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:.74rem;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--bg)}
+.pips{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.pips button{width:8px;height:8px;padding:0;border-radius:999px;border:0;background:var(--line);cursor:pointer;transition:width .3s cubic-bezier(.16,1,.3,1),background .3s}
+.pips button[aria-current="true"]{width:26px;background:var(--accent)}
+@media (max-width:620px){.track{grid-auto-columns:88%}.meta{grid-template-columns:1fr}.meta .kind{padding-top:0}.bar .go{display:none}}
+
+/* case study */
+.case{margin-top:36px;display:grid;grid-template-columns:1.1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.case .l{padding:36px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.case .r{padding:36px;background:var(--tint);min-width:0}
+.case h3{font-size:2rem;font-weight:800}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin:0}
+.facts dt{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.facts dd{margin:4px 0 0;font-weight:500}
+.phases{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px;counter-reset:ph}
+.phases li{display:grid;grid-template-columns:2.2rem 1fr;gap:10px;counter-increment:ph}
+.phases li::before{content:counter(ph);font-family:var(--f-mono);font-size:.78rem;width:1.7rem;height:1.7rem;display:grid;place-items:center;border-radius:999px;border:1px solid var(--accent);color:var(--accent)}
+.phases b{display:block;font-weight:600}
+.phases span{color:var(--muted);font-size:.92rem}
+@media (max-width:860px){.case{grid-template-columns:1fr}.case .l,.case .r{padding:24px}.facts{grid-template-columns:1fr}}
+
+/* in progress */
+.grid{margin-top:28px;display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.card{grid-column:span 2;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.wide{grid-column:span 3}
+.card.dark{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.card.dark .desc{color:color-mix(in srgb,var(--bg) 72%,var(--fg))}
+.card.dark .tag{color:color-mix(in srgb,var(--bg) 66%,var(--fg))}
+.card.dark .chip{background:transparent;border-color:color-mix(in srgb,var(--bg) 30%,var(--fg));color:color-mix(in srgb,var(--bg) 80%,var(--fg))}
+.card .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card h3{font-size:1.3rem;font-weight:700}
+.card .desc{color:var(--muted);font-size:.95rem}
+.card .chips{margin-top:auto}
+.tag{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}.card,.card.wide{grid-column:span 1}.card.wide.first{grid-column:span 2}}
+@media (max-width:620px){.grid{grid-template-columns:1fr}.card,.card.wide,.card.wide.first{grid-column:span 1}}
+
+.exp{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--fg)}
+.exp article{padding:22px 22px 0 0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.exp article + article{padding-left:22px;border-left:1px solid var(--line)}
+.exp .when{font-family:var(--f-mono);font-size:.78rem;color:var(--accent);font-variant-numeric:tabular-nums}
+.exp h3{font-size:1.1rem;font-weight:700}
+.exp p{color:var(--muted);font-size:.92rem}
+@media (max-width:860px){.exp{grid-template-columns:1fr 1fr;row-gap:24px}.exp article:nth-child(3){padding-left:0;border-left:0}}
+@media (max-width:520px){.exp{grid-template-columns:1fr}.exp article,.exp article + article{padding-left:0;border-left:0}}
+
+.contact{margin-block:24px 72px;padding:44px;border-radius:var(--r);background:var(--accent);color:var(--accent-ink);display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.contact h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800}
+.contact p{margin-top:10px;opacity:.85;max-width:44ch}
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:flex-end}
+.mail code{font-family:var(--f-mono);font-size:1rem;user-select:all;word-break:break-all}
+.btn.inv{background:var(--accent-ink);color:var(--accent)}
+@media (max-width:760px){.contact{grid-template-columns:1fr;padding:28px}.mail{justify-content:flex-start}}
+footer{padding-block:0 40px;color:var(--muted);font-size:.85rem}
+
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0)*80ms)}
+  @keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+}
+@media (prefers-reduced-motion:reduce){.track{scroll-behavior:auto}.shot,.btn,.pips button{transition:none}.shot:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Principal">
+    <span class="name">Larabas Hadi</span>
+    <ul>
+      <li><a href="#publicados">Publicados</a></li>
+      <li><a href="#sportmag">SportMag</a></li>
+      <li><a href="#desarrollo">En desarrollo</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1 class="rise">Webs y aplicaciones <em>que ya están en marcha.</em></h1>
+      <p class="sub rise" style="--i:1">Desarrollador web en Gijón. Next.js, WordPress, Supabase y Firebase, con base en SEO y ciberseguridad.</p>
+      <div class="cta rise" style="--i:2">
+        <a class="btn primary" href="#publicados">Ver proyectos</a>
+        <a class="btn ghost" href="#contacto">Contactar</a>
+      </div>
+    </div>
+    <div class="areas rise" style="--i:3" aria-label="Áreas de trabajo">
+      <div><b>Desarrollo</b><span>Next.js, React, TypeScript, PHP, WordPress, Supabase y Firebase</span></div>
+      <div><b>SEO / SEM</b><span>Máster en SEO-SEM y Marketing Digital. Webs que se encuentran</span></div>
+      <div><b>Seguridad</b><span>RLS, autorización en servidor, CSP y rate limiting desde el diseño</span></div>
+      <div><b>Idiomas</b><span>Español y árabe nativos, inglés B1, francés básico</span></div>
+    </div>
+  </header>
+
+  <section class="block" id="publicados" aria-roledescription="carrusel" aria-label="Proyectos publicados">
+    <div class="sec-head">
+      <div>
+        <h2 class="sec-h">Proyectos publicados</h2>
+        <p class="sec-p">Pulsa cualquier captura para abrir la web en vivo.</p>
+      </div>
+      <div class="car-ctrl">
+        <button type="button" id="prev" aria-label="Proyecto anterior">&#8592;</button>
+        <span class="car-count" id="count" aria-live="polite">1 / 7</span>
+        <button type="button" id="next" aria-label="Proyecto siguiente">&#8594;</button>
+      </div>
+    </div>
+
+    <div class="track" id="track" tabindex="0">
+      <article class="slide">
+        <a class="shot" href="https://sportmag-studio.vercel.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">sportmag-studio.vercel.app</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/sportmag.webp" alt="Portada de SportMag Studio: crea la revista oficial de tu club en minutos" width="1200" height="568">
+        </a>
+        <div class="meta">
+          <h3>SportMag Studio</h3><span class="kind">SaaS propio</span>
+          <p>Plataforma para que clubes y federaciones creen, publiquen y moneticen su revista digital con patrocinadores e IA editorial.</p>
+          <div class="chips"><span class="chip">Next.js 14</span><span class="chip">TypeScript</span><span class="chip">Supabase</span><span class="chip">Vercel</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://sprightly-maamoul-2329c8.netlify.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Portfolio personal</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/cv-3d.webp" alt="Portfolio de Larabas Hadi Blanco con un personaje 3D trabajando en un portátil" width="1200" height="568" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Portfolio interactivo en 3D</h3><span class="kind">Proyecto personal</span>
+          <p>Mi CV como web: un personaje 3D acompaña el scroll por experiencia, formación, voluntariado, fotografía e hípica.</p>
+          <div class="chips"><span class="chip">Three.js</span><span class="chip">JavaScript</span><span class="chip">SEO on-page</span><span class="chip">Netlify</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://silver-cheesecake-303323.netlify.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Deep Saurio</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/deep-saurio.webp" alt="Portada de Deep Saurio con la desbrozadora por control remoto" width="1200" height="568" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Deep Saurio</h3><span class="kind">Web de cliente</span>
+          <p>Web comercial de desbrozadoras por control remoto: venta de máquinas, gama compacta, alquiler con operario, vídeos y tarifas.</p>
+          <div class="chips"><span class="chip">HTML/CSS/JS</span><span class="chip">Responsive</span><span class="chip">Netlify</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://resilient-otter-473d93.netlify.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Bahmu Import Export</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/bahmu.webp" alt="Portada de Bahmu Import Export: conectamos mercados" width="1200" height="568" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Bahmu Import Export</h3><span class="kind">Web de cliente</span>
+          <p>Web corporativa para una empresa de comercio internacional, con servicios, mercados de trabajo y categorías de producto.</p>
+          <div class="chips"><span class="chip">HTML/CSS/JS</span><span class="chip">SEO on-page</span><span class="chip">Netlify</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://elaborate-cheesecake-8e3506.netlify.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Configurador Refractaria</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/refractaria.webp" alt="Configurador de calidades refractarias por sector, equipo o condiciones de servicio" width="1200" height="568" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Configurador refractario</h3><span class="kind">Herramienta B2B</span>
+          <p>Recomienda la calidad refractaria adecuada a partir de sector, equipo térmico y condiciones de servicio, con un motor de reglas auditable.</p>
+          <div class="chips"><span class="chip">JavaScript</span><span class="chip">Motor de reglas</span><span class="chip">Netlify</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://crm-consultoria-be7b2.web.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">crm-consultoria-be7b2.web.app</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/consultoria.webp" alt="Portada del panel de consultoría: problema, proceso, oportunidad, solución y resultado medido" width="1200" height="562" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Daliil · panel de consultoría</h3><span class="kind">SaaS propio</span>
+          <p>Plataforma interna de Daliil, mi consultoría de IA para pymes: pipeline comercial, diagnósticos, oportunidades con ROI, proyectos, tiempo, rentabilidad e informes.</p>
+          <div class="chips"><span class="chip">React</span><span class="chip">Firebase</span><span class="chip">Firestore</span><span class="chip">Firebase Hosting</span></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <a class="shot" href="https://inscripciones-congreso.netlify.app/" target="_blank" rel="noopener">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">inscripciones-congreso.netlify.app</span><span class="go">Abrir web &#8599;</span></div>
+          <img src="img/congreso.webp" alt="Página de inscripciones al congreso, cena de gala y desfile" width="1200" height="568" loading="lazy">
+        </a>
+        <div class="meta">
+          <h3>Inscripciones a congreso</h3><span class="kind">Evento</span>
+          <p>Inscripción a congreso, cena de gala y desfile, con control de pagos y panel de administración.</p>
+          <div class="chips"><span class="chip">JavaScript</span><span class="chip">Supabase</span><span class="chip">Netlify</span></div>
+        </div>
+      </article>
+    </div>
+    <div class="pips" id="pips" role="group" aria-label="Elegir proyecto"></div>
+  </section>
+
+  <section class="block" id="sportmag" style="padding-top:8px">
+    <h2 class="sec-h">SportMag Studio, en detalle</h2>
+    <p class="sec-p">Mi proyecto más completo: un SaaS multi-organización desarrollado por fases, de núcleo funcional a IA editorial.</p>
+
+    <div class="case">
+      <div class="l">
+        <h3>Revistas con planes, roles e IA</h3>
+        <p class="muted">Editor visual por bloques con autoguardado, 16 plantillas por deporte, muro de patrocinadores, publicación en URL pública y exportación a PDF A4.</p>
+        <dl class="facts">
+          <div><dt>Seguridad</dt><dd>Datos aislados por organización y permisos comprobados en servidor</dd></div>
+          <div><dt>Planes</dt><dd>Límites aplicados en servidor: revistas, páginas, PDF e IA</dd></div>
+          <div><dt>Roles</dt><dd>Propietario, admin, editor, redactor y lector</dd></div>
+          <div><dt>IA editorial</dt><dd>Titulares, crónicas y fichas de jugador con tono y longitud</dd></div>
+        </dl>
+        <div class="chips">
+          <span class="chip">Next.js 14</span><span class="chip">TypeScript</span><span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">Tailwind</span><span class="chip">Zod</span><span class="chip">dnd-kit</span>
+        </div>
+        <div><a class="btn ghost" href="https://sportmag-studio.vercel.app/" target="_blank" rel="noopener">Abrir SportMag &#8599;</a></div>
+      </div>
+      <div class="r">
+        <p class="mono muted">Desarrollo por fases</p>
+        <ol class="phases">
+          <li><div><b>Núcleo funcional</b><span>Registro verificado, organizaciones, editor y publicación</span></div></li>
+          <li><div><b>Editor libre</b><span>Bloques añadidos, lienzo con posición libre y PDF según plan</span></div></li>
+          <li><div><b>12 plantillas</b><span>Fútbol sala, baloncesto, pádel, running, esports y más</span></div></li>
+          <li><div><b>Cuentas y permisos</b><span>Gestión de miembros, marca de la organización y límite de páginas</span></div></li>
+          <li><div><b>Control de acceso</b><span>Acceso por revista y gestión de cuentas</span></div></li>
+          <li><div><b>IA editorial</b><span>Generador de textos con límite mensual por plan</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="desarrollo" style="padding-top:8px">
+    <h2 class="sec-h">En desarrollo</h2>
+    <p class="sec-p">Proyectos construidos o en marcha que todavía no tienen una versión pública que enseñar.</p>
+    <div class="grid">
+      <article class="card wide dark">
+        <div class="head"><h3>EquiMarket</h3><span class="tag">Marketplace</span></div>
+        <p class="desc">Marketplace de caballos de deporte con fichas, genealogía, comparador, favoritos y chat entre comprador y vendedor.</p>
+        <div class="chips"><span class="chip">Next.js 14</span><span class="chip">Firebase</span><span class="chip">Tailwind</span></div>
+      </article>
+      <article class="card wide">
+        <div class="head"><h3>Web Woer</h3><span class="tag">Web de cliente</span></div>
+        <p class="desc">Sitio para un distribuidor español de maquinaria Woer.</p>
+        <div class="chips"><span class="chip">Next.js 14</span><span class="chip">Prisma</span></div>
+      </article>
+      <article class="card wide">
+        <div class="head"><h3>JumpStats Pro</h3><span class="tag">Prototipo</span></div>
+        <p class="desc">Estadísticas, rankings y calendario de salto de obstáculos.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">Chart.js</span></div>
+      </article>
+      <article class="card wide">
+        <div class="head"><h3>Synergy 2026</h3><span class="tag">Evento</span></div>
+        <p class="desc">Landing de congreso en HTML y en Elementor, con el estilo de la edición anterior.</p>
+        <div class="chips"><span class="chip">HTML/CSS</span><span class="chip">Elementor</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="experiencia" style="padding-top:8px">
+    <h2 class="sec-h">Experiencia</h2>
+    <div class="exp">
+      <article><span class="when">2023 - hoy</span><h3>Guppy</h3><p>Programador web.</p></article>
+      <article><span class="when">Grupo GJunquera</span><h3>E+ Ingeniería</h3><p>Desarrollo web y soporte técnico para todo el grupo.</p></article>
+      <article><span class="when">2022 - 2023</span><h3>Ayuntamiento de Gijón</h3><p>Desarrollo del portal de datos abiertos.</p></article>
+      <article><span class="when">Formación</span><h3>SEO-SEM e IFCD0210</h3><p>Máster en SEO-SEM y Marketing Digital y certificado de desarrollo web.</p></article>
+    </div>
+  </section>
+
+  <section class="contact" id="contacto">
+    <div>
+      <h2>¿Tienes un proyecto?</h2>
+      <p>Webs, aplicaciones a medida, SEO o una revisión de seguridad. Escríbeme y te respondo.</p>
+    </div>
+    <div class="mail">
+      <code id="email">larabashadi@gmail.com</code>
+      <button class="btn inv" type="button" id="copy">Copiar email</button>
+    </div>
+  </section>
+
+  <footer>Larabas Hadi Blanco · Gijón, Asturias</footer>
+</div>
+
+<script>
+(function(){
+  var track=document.getElementById('track');
+  var slides=[].slice.call(track.querySelectorAll('.slide'));
+  var prev=document.getElementById('prev'),next=document.getElementById('next');
+  var count=document.getElementById('count'),pips=document.getElementById('pips');
+  var cur=0;
+  slides.forEach(function(s,i){
+    s.setAttribute('aria-label',(i+1)+' de '+slides.length);
+    var b=document.createElement('button');b.type='button';b.id='pip-'+i;
+    b.setAttribute('aria-label','Ir al proyecto '+(i+1));
+    b.addEventListener('click',function(){go(i)});
+    pips.appendChild(b);
+  });
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    track.scrollTo({left:slides[i].offsetLeft-track.offsetLeft,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
+  function set(i){
+    cur=i;count.textContent=(i+1)+' / '+slides.length;
+    prev.disabled=i===0;
+    next.disabled=i===slides.length-1;
+    [].forEach.call(pips.children,function(p,j){p.setAttribute('aria-current',j===i?'true':'false')});
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting&&e.intersectionRatio>=.6)set(slides.indexOf(e.target))});
+    },{root:track,threshold:[.6]});
+    slides.forEach(function(s){io.observe(s)});
+  }
+  prev.addEventListener('click',function(){go(cur-1)});
+  next.addEventListener('click',function(){go(cur+1)});
+  track.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'){e.preventDefault();go(cur+1)}
+    if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1)}
+  });
+  set(0);
+
+  var copy=document.getElementById('copy'),email=document.getElementById('email');
+  copy.addEventListener('click',function(){
+    function done(){copy.textContent='Copiado';setTimeout(function(){copy.textContent='Copiar email'},1800)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(email);var s=getSelection();s.removeAllRanges();s.addRange(r);copy.textContent='Seleccionado'}
+    try{navigator.clipboard.writeText(email.textContent).then(done,fallback)}catch(e){fallback()}
+  });
+})();
+</script>
+</body>
+</html>

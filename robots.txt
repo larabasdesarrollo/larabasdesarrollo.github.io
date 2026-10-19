@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://larabasdesarrollo.github.io/sitemap.xml
