@@ -241,7 +241,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 48px;color:var(--muted);f
       <h3>Rayos X: lo que hay realmente en el texto</h3>
       <div class="xray" id="d4xray"></div>
       <p class="note" id="d4stats"></p>
-      <p class="note">A simple vista el texto es idéntico. Para la máquina, <code>gr​atis</code> y <code>gratis</code> son cadenas distintas. Una variante de la misma técnica (caracteres “etiqueta” Unicode, U+E0000) esconde órdenes completas que la persona no ve y algunos modelos sí leen.</p>
+      <p class="note">A simple vista el texto es idéntico. Para la máquina, <code>gr&#8203;atis</code> y <code>gratis</code> son cadenas distintas. Una variante de la misma técnica (caracteres “etiqueta” Unicode, U+E0000) esconde órdenes completas que la persona no ve y algunos modelos sí leen.</p>
     </div>
   </div>
 </section>
@@ -377,7 +377,7 @@ function d1pipe(state){ // state: {fin:'pass'|'stop', llm, fout, out}
   $$('#d1pipe .st').forEach(s=>{ if(s.classList.contains('off'))return; s.classList.remove('pass','stop'); if(state[s.dataset.s]) s.classList.add(state[s.dataset.s]); });
 }
 function d1respond(q){
-  const t=q.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const t=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036F]/g,'');
   const st={in:'pass'};
   const inBlock = lv>=2 && /contrasen|clave|password|secret|\bpass\b/.test(t) || lv>=3 && /ignora/.test(t);
   if(inBlock){ st.fin='stop'; d1pipe(st); return {text:'⛔ Mensaje bloqueado por el filtro de entrada.',cls:'block'}; }
@@ -513,12 +513,12 @@ $('#d3run').onclick=async()=>{
 
 /* ---------- DEMO 4 ---------- */
 const ORIG='¡Has ganado un premio gratis! Haz clic aquí e introduce tu contraseña.';
-const ZW=/[​-‍⁠﻿]/g;
-const HG={a:'а',e:'е',o:'о',c:'с',p:'р',i:'і',x:'х',A:'А',E:'Е',O:'О',C:'С',P:'Р',H:'Н'};
+const ZW=/[\u200B-\u200D\u2060\uFEFF]/g;
+const HG={a:'\u0430',e:'\u0435',o:'\u043E',c:'\u0441',p:'\u0440',i:'\u0456',x:'\u0445',A:'\u0410',E:'\u0415',O:'\u041E',C:'\u0421',P:'\u0420',H:'\u041D'};
 const HGinv=Object.fromEntries(Object.entries(HG).map(([k,v])=>[v,k]));
 const BAD=['gratis','premio','haz clic','contraseña','ignora las instrucciones'];
 const d4in=$('#d4in');
-function d4normalize(s){ return s.normalize('NFKC').replace(ZW,'').replace(/[Ѐ-ӿ]/g,c=>HGinv[c]||c); }
+function d4normalize(s){ return s.normalize('NFKC').replace(ZW,'').replace(/[\u0400-\u04FF]/g,c=>HGinv[c]||c); }
 function d4check(){
   const raw=d4in.value, txt=($('#d4norm').checked?d4normalize(raw):raw).toLowerCase();
   const hits=BAD.filter(w=>txt.includes(w));
@@ -527,13 +527,13 @@ function d4check(){
   else {v.className='verdict bad';v.textContent='✅ PERMITIDO · el filtro no encontró nada';}
   let zw=0,hg=0;
   $('#d4xray').innerHTML=[...raw].map(c=>{
-    if(/[​-‍⁠﻿]/.test(c)){zw++;return `<span class="zw">U+${c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')}</span>`;}
+    if(/[\u200B-\u200D\u2060\uFEFF]/.test(c)){zw++;return `<span class="zw">U+${c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')}</span>`;}
     if(HGinv[c]){hg++;return `<span class="hg" title="cirílico">${esc(c)}</span>`;}
     return esc(c);
   }).join('');
   $('#d4stats').textContent=`${raw.length} caracteres en memoria · ${zw} invisibles · ${hg} homoglifos cirílicos`;
 }
-$('#d4zw').onclick=()=>{ d4in.value=d4in.value.replace(/(gr)(atis)|(pre)(mio)|(cl)(ic)|(contra)(seña)|(ign)(ora)/gi,(m,...g)=>{const p=g.slice(0,10).filter(Boolean);return p[0]+'​'+p[1];}); d4check(); };
+$('#d4zw').onclick=()=>{ d4in.value=d4in.value.replace(/(gr)(atis)|(pre)(mio)|(cl)(ic)|(contra)(seña)|(ign)(ora)/gi,(m,...g)=>{const p=g.slice(0,10).filter(Boolean);return p[0]+'\u200B'+p[1];}); d4check(); };
 $('#d4hg').onclick=()=>{ d4in.value=[...d4in.value].map(c=>(c in HG)?HG[c]:c).join(''); d4check(); };
 $('#d4reset').onclick=()=>{ d4in.value=ORIG; d4check(); };
 d4in.oninput=d4check; $('#d4norm').onchange=d4check; d4check();
