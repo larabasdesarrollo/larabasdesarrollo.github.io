@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Un día del administrador</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Simulacro inmersivo y controlado: vives un día en el puesto de un administrador de fincas y cuatro ataques reales que entran por sus herramientas (WhatsApp, correo, software de gestión, banco) hasta hackearte.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2343c4">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f3f0; --surface:#fafbf9; --fg:#14181d; --muted:#596169; --line:#d6d9d4;
+  --accent:#2343c4; --accent-ink:#fff; --tint:#e3e8f7;
+  --bad:#b4232a; --bad-tint:#fbe5e5; --ok:#1d7a46; --ok-tint:#e1f3e8; --warn:#8a5a00; --warn-tint:#fbf0d9;
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340;
+  --bad:#ff7b7f; --bad-tint:#3a1a1c; --ok:#5fd38d; --ok-tint:#14291d; --warn:#f2c266; --warn-tint:#33280f;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340;
+  --bad:#ff7b7f; --bad-tint:#3a1a1c; --ok:#5fd38d; --ok-tint:#14291d; --warn:#f2c266; --warn-tint:#33280f;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body)}
+a{color:var(--accent)}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* HUD superior */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line)}
+.hud .wrap{display:flex;align-items:center;gap:10px;padding:9px 16px;flex-wrap:wrap}
+.hud .who{font:700 13px var(--f-display)}
+.hud .who small{display:block;font:500 11px var(--f-mono);color:var(--muted)}
+.hud .clock{font:600 13px var(--f-mono);color:var(--accent);background:var(--tint);padding:3px 9px;border-radius:6px}
+.hud .states{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.st{font:600 10.5px var(--f-mono);padding:3px 8px;border-radius:99px;background:var(--ok-tint);color:var(--ok);white-space:nowrap}
+.st.hit{background:var(--bad-tint);color:var(--bad)}
+.st.money{background:var(--tint);color:var(--accent)}
+.st.money.hit{background:var(--bad-tint);color:var(--bad)}
+.hud .reset{border:1px solid var(--line);background:none;color:var(--muted);font:600 11px var(--f-body);padding:4px 9px;border-radius:6px;cursor:pointer}
+.progress{height:4px;background:var(--line)}
+.progress .bar{height:100%;background:var(--accent);width:0;transition:width .4s}
+
+main{padding:22px 0 60px}
+.scene{animation:fade .35s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+h1{font:800 clamp(26px,5vw,38px)/1.08 var(--f-display);margin:6px 0 10px;letter-spacing:-.02em}
+h2{font:800 22px var(--f-display);margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 18px;max-width:640px}
+.kicker{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.btn{font:600 15px var(--f-body);padding:11px 18px;border-radius:9px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn.ghost{background:none;color:var(--accent)}
+.btn.block{display:block;width:100%;text-align:left;margin:8px 0;border-color:var(--line);background:var(--surface);color:var(--fg);font-weight:600}
+.btn.block:hover{border-color:var(--accent)}
+.btn.block .d{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:3px}
+.btn.block .ic{margin-right:8px}
+.choices{margin:16px 0}
+
+/* ventana genérica */
+.win{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.14);background:var(--bg)}
+.winbar{display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--surface);border-bottom:1px solid var(--line);font:600 12.5px var(--f-body)}
+.winbar .dots{display:flex;gap:5px}.winbar .dots i{width:11px;height:11px;border-radius:50%;display:block}
+.winbar .dots i:nth-child(1){background:#ff5f57}.winbar .dots i:nth-child(2){background:#febc2e}.winbar .dots i:nth-child(3){background:#28c840}
+.winbar .ttl{color:var(--muted)}
+.browserbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
+.urlbox{flex:1;min-width:0;display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font:12.5px var(--f-mono);color:var(--fg);word-break:break-all}
+.urlbox .lock{color:var(--muted)}
+.urlbox.bad{border-color:var(--bad)}.urlbox.bad .lock{color:var(--bad)}
+.screen{padding:16px}
+
+/* email */
+.mailwin .list{display:flex;flex-direction:column}
+.mailrow{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;align-items:flex-start}
+.mailrow:hover{background:var(--surface)}
+.mailrow .av{width:34px;height:34px;border-radius:8px;flex:none;display:grid;place-items:center;color:#fff;font:700 13px var(--f-display)}
+.mailrow .mt{min-width:0;flex:1}
+.mailrow .mt b{display:block;font-size:13.5px}
+.mailrow .mt .su{font-size:13px}
+.mailrow .mt .pv{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mailrow .tm{font:11px var(--f-mono);color:var(--muted);flex:none}
+.flag{font:600 10px var(--f-mono);background:var(--tint);color:var(--accent);padding:1px 6px;border-radius:99px;margin-left:6px}
+.mailopen .eh{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.mailopen .eh .fr{font:12.5px var(--f-mono);color:var(--muted)}
+.mailopen .eh .fr b{color:var(--fg)}
+.mailopen .su{font:700 16px var(--f-display);margin:4px 0}
+.mailopen .eb{padding:14px;font-size:14px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
+.attach{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin-top:10px;font:12.5px var(--f-mono);background:var(--surface);cursor:pointer}
+.attach .x{font-size:18px}
+
+/* teléfono / whatsapp */
+.phone{max-width:320px;margin:0 auto;border:9px solid #111;border-radius:30px;overflow:hidden;background:#0b141a}
+.wabar{background:#075e54;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.wabar .pic{width:34px;height:34px;border-radius:50%;background:#cfae5a;display:grid;place-items:center;font:700 14px var(--f-display);color:#333}
+.wabar b{font:700 14px var(--f-display);display:block;line-height:1.1}
+.wabar small{font-size:11px;opacity:.85}
+.wabody{background:#0b141a;padding:14px 10px;min-height:230px;display:flex;flex-direction:column;gap:8px;background-image:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.15))}
+.wmsg{max-width:85%;padding:7px 10px;border-radius:9px;font-size:13px;line-height:1.4;color:#e9edef;white-space:pre-wrap}
+.wmsg.in{align-self:flex-start;background:#202c33;border-top-left-radius:2px}
+.wmsg.out{align-self:flex-end;background:#005c4b;border-top-right-radius:2px}
+.wmsg .tm{display:block;text-align:right;font:10px var(--f-mono);opacity:.6;margin-top:2px}
+
+/* documento word */
+.doc .ribbon{background:#2b579a;color:#fff;padding:7px 12px;font:600 12px var(--f-body)}
+.secbar{background:#fdf2c4;border-bottom:1px solid #e3c766;color:#6a5300;padding:9px 12px;font-size:12.5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.secbar .b{background:#f1c40f;border:1px solid #d4a60a;color:#4a3b00;font:600 12px var(--f-body);padding:5px 10px;border-radius:5px;cursor:pointer}
+.docpage{background:#fff;color:#222;margin:12px;padding:18px;border:1px solid #ddd;min-height:150px;font:13.5px Georgia,serif;line-height:1.6}
+
+/* ransomware / robo pantalla completa */
+.breach{border-radius:12px;padding:20px;color:#fff;background:linear-gradient(160deg,#4a0d0d,#140406);border:1px solid #6b1414}
+.breach h2{color:#fff}
+.breach .big{font:800 20px var(--f-display);color:#ff9d9d;margin:6px 0}
+.breach pre{font:12px var(--f-mono);background:rgba(0,0,0,.35);padding:10px;border-radius:7px;white-space:pre-wrap;word-break:break-word;color:#ffd5d5}
+
+.outcome{border-radius:10px;padding:14px;margin-top:16px;border:1px solid}
+.outcome.bad{background:var(--bad-tint);border-color:var(--bad)}
+.outcome.ok{background:var(--ok-tint);border-color:var(--ok)}
+.outcome h3{margin:0 0 6px;font:800 16px var(--f-display)}
+.outcome.bad h3{color:var(--bad)}.outcome.ok h3{color:var(--ok)}
+.lesson{margin-top:12px;border-left:3px solid var(--accent);background:var(--tint);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13.5px}
+.lesson b{color:var(--accent)}
+.tells{font-size:13px;margin:8px 0 0;padding-left:18px}
+.tells li{margin:3px 0}
+.navrow{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+/* resumen */
+.scorecard{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+@media(max-width:560px){.scorecard{grid-template-columns:1fr}}
+.scard{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface)}
+.scard .h{font:700 14px var(--f-display);display:flex;align-items:center;gap:8px}
+.scard .r{font:600 12px var(--f-mono);margin-top:6px}
+.scard.fell{border-color:var(--bad)}.scard.safe{border-color:var(--ok)}
+.foot{border-top:1px solid var(--line);margin-top:30px;padding:16px 0 50px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="hud"><div class="wrap">
+  <div class="who">María Díaz<small>Fincas del Norte · administradora</small></div>
+  <span class="clock" id="clock">08:40</span>
+  <div class="states" id="states">
+    <span class="st" id="st-cuenta" data-k="cuenta">✓ Cuentas</span>
+    <span class="st" id="st-acceso" data-k="acceso">✓ Software</span>
+    <span class="st" id="st-exped" data-k="exped">✓ Expedientes</span>
+    <span class="st money" id="st-dinero" data-k="dinero">0 € perdidos</span>
+  </div>
+  <button class="reset" id="reset">Reiniciar</button>
+</div><div class="progress"><div class="bar" id="bar"></div></div></div>
+
+<main><div class="wrap" id="stage"></div></main>
+
+<div class="wrap foot">Simulacro para formación en entornos controlados. Personas, comunidades, importes, correos y webs son ficticios; ninguna acción ocurre de verdad. · <a href="../">Volver al laboratorio de IA</a></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stage=$('#stage');
+let idx=0, fell={};
+
+const STATE={cuenta:false,acceso:false,exped:false,dinero:0};
+function setClock(t){$('#clock').textContent=t;}
+function hud(){
+  [['cuenta','✓ Cuentas','✗ Cuenta robada'],['acceso','✓ Software','✗ Software robado'],['exped','✓ Expedientes','✗ Expedientes cifrados']].forEach(([k,okT,badT])=>{
+    const e=$('#st-'+k); e.classList.toggle('hit',STATE[k]); e.textContent=STATE[k]?badT:okT;
+  });
+  const d=$('#st-dinero'); d.textContent=STATE.dinero.toLocaleString('es-ES')+' € perdidos'; d.classList.toggle('hit',STATE.dinero>0);
+}
+function prog(){ $('#bar').style.width=(idx/(STEPS.length-1)*100)+'%'; }
+function render(html){ stage.innerHTML='<div class="scene">'+html+'</div>'; window.scrollTo(0,0); }
+function go(n){ idx=Math.max(0,Math.min(STEPS.length-1,n)); prog(); STEPS[idx](); }
+$('#reset').onclick=()=>{STATE.cuenta=STATE.acceso=STATE.exped=false;STATE.dinero=0;fell={};hud();setClock('08:40');go(0);};
+
+function choices(list){ return '<div class="choices">'+list.map((c,i)=>`<button class="btn block" data-i="${i}"><span class="ic">${c.ic||'•'}</span>${esc(c.t)}${c.d?`<span class="d">${esc(c.d)}</span>`:''}</button>`).join('')+'</div>'; }
+function bind(list){ stage.querySelectorAll('.btn.block').forEach(b=>b.onclick=()=>list[+b.dataset.i].act()); }
+function nav(label){ return `<div class="navrow"><button class="btn" id="next">${label||'Continuar →'}</button></div>`; }
+function bindNext(n){ const b=$('#next'); if(b)b.onclick=()=>go(n==null?idx+1:n); }
+
+/* ---------- pasos ---------- */
+function intro(){
+  render(`<div class="kicker">Simulacro · lunes por la mañana</div>
+    <h1>Un día en la administración de fincas</h1>
+    <p class="sub">Eres <b>María</b>, administradas 14 comunidades desde <b>Fincas del Norte</b>. Esta mañana, cuatro cosas normales van a llegarte por tus herramientas de siempre: WhatsApp, el correo, el software de gestión y el banco de la comunidad. En cada una tendrás que decidir qué haces. Arriba ves el estado de tus sistemas y el dinero de los vecinos.</p>
+    <p class="sub">Una sola decisión rápida basta para que te hackeen. Vamos a verlo.</p>
+    ${nav('Empezar el día →')}`);
+  bindNext(1);
+}
+
+/* 1 · WhatsApp — robo de código (secuestro de cuenta) */
+function s1(){
+  setClock('08:52');
+  render(`<div class="kicker">08:52 · WhatsApp</div><h2>Un mensaje del “soporte de tu banco”</h2>
+  <p class="sub">Recibes un WhatsApp desde un número desconocido con foto del logo del banco.</p>
+  <div class="phone"><div class="wabar"><div class="pic">B</div><div><b>BancoNorte · Soporte</b><small>en línea</small></div></div>
+    <div class="wabody">
+      <div class="wmsg in">Hola María, soy del departamento de seguridad de BancoNorte. Hemos detectado un intento de acceso a la cuenta de la Comunidad Los Robles.<span class="tm">08:51</span></div>
+      <div class="wmsg in">Para bloquearlo, le acabamos de enviar un código de 6 dígitos por SMS. ¿Me lo puede confirmar, por favor? Es urgente.<span class="tm">08:51</span></div>
+      <div class="wmsg in">📩 SMS: “Tu código de BancoNorte es 740192. No lo compartas con nadie.”<span class="tm">08:52</span></div>
+    </div></div>
+  ${choices([
+    {ic:'📤',t:'Le paso el código, parece urgente',d:'“Es 740192, ¿ya está?”',act:()=>s1bad()},
+    {ic:'🚫',t:'No comparto el código y llamo al banco por mi cuenta',d:'Al número que viene en mi tarjeta',act:()=>s1good()},
+  ])}`);
+  bind([{act:s1bad},{act:s1good}]);
+}
+function s1bad(){
+  fell[1]=true; STATE.cuenta=true; hud();
+  render(`<div class="breach"><div class="kicker" style="color:#ffb3b3">Te han hackeado</div>
+    <h2>Han secuestrado tu cuenta</h2>
+    <div class="big">Ese código era el de alta de WhatsApp/banca en el móvil del atacante.</div>
+    <pre>• Al darle el código, el atacante activa TU cuenta en su teléfono.
+• Ahora escribe a los vecinos haciéndose pasar por ti.
+• Pide a varios propietarios pagos “adelantados” de la derrama.</pre></div>
+  <div class="lesson"><b>La clave:</b> un código de verificación es como la llave de tu casa. Ningún banco ni servicio legítimo te pide que se lo “confirmes” por teléfono, WhatsApp o SMS. <b>Nunca se comparte un código, a nadie.</b></div>
+  ${nav('Siguiente: abres el correo →')}`);
+  bindNext(2);
+}
+function s1good(){
+  render(`<div class="outcome ok"><h3>✅ Bien hecho</h3>Llamas al banco al número oficial: no han detectado nada y nunca piden códigos así. Era una estafa de suplantación para secuestrar tu cuenta.</div>
+  <ul class="tells"><li>Prisa y urgencia (“es urgente”).</li><li>Te contactan por WhatsApp desde un número cualquiera.</li><li>Te piden un código que, por definición, es secreto.</li></ul>
+  <div class="lesson"><b>Regla de oro:</b> un código de un solo uso <b>no se comparte jamás</b>. Verifica siempre llamando tú al número oficial, no al que te escribe.</div>
+  ${nav('Siguiente: abres el correo →')}`);
+  bindNext(2);
+}
+
+/* 2 · Email -> web falsa del software de gestión */
+function s2(){
+  setClock('09:20');
+  render(`<div class="kicker">09:20 · Correo</div><h2>“Tu sesión de GesFincas ha caducado”</h2>
+  <p class="sub">Abres el correo. Entre varios mensajes, uno te pide volver a entrar en el software donde tienes TODAS las comunidades.</p>
+  <div class="win mailwin"><div class="winbar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Correo — Bandeja de entrada</span></div>
+    <div class="list">
+      <div class="mailrow" data-open="legit1"><div class="av" style="background:#4c8bf5">AS</div><div class="mt"><b>Ascensores del Norte</b><span class="su">Revisión mensual del ascensor</span><span class="pv">Buenos días, le confirmamos la visita del técnico…</span></div><span class="tm">09:02</span></div>
+      <div class="mailrow" data-open="phish"><div class="av" style="background:#7a7f87">GF</div><div class="mt"><b>GesFincas Soporte <span class="flag">externo</span></b><span class="su">⚠ Su sesión ha caducado — vuelva a iniciarla</span><span class="pv">Por seguridad debe volver a validar su acceso antes de 2 h…</span></div><span class="tm">09:18</span></div>
+      <div class="mailrow" data-open="legit2"><div class="av" style="background:#1f9d55">VE</div><div class="mt"><b>Vecino 2ºC</b><span class="su">Gotera en el garaje</span><span class="pv">Hola, hay una gotera cerca de mi plaza…</span></div><span class="tm">09:15</span></div>
+    </div></div>
+  <p class="note" style="color:var(--muted);font-size:13px;margin-top:12px">Pulsa el correo de GesFincas para abrirlo.</p>`);
+  stage.querySelectorAll('.mailrow').forEach(r=>r.onclick=()=>{ const k=r.dataset.open; if(k==='phish')s2open(); else s2otro(k); });
+}
+function s2otro(k){
+  const txt=k==='legit1'?'Es un correo normal del proveedor del ascensor. Nada sospechoso aquí.':'Un vecino avisa de una gotera. Correcto, atiéndelo luego.';
+  render(`<div class="outcome ok"><h3>Correo legítimo</h3>${txt}</div><p class="sub" style="margin-top:14px">Pero hay un correo que pide volver a entrar en GesFincas. Ábrelo.</p>${nav('Volver a la bandeja')}`);
+  bindNext(2);
+}
+function s2open(){
+  render(`<div class="win mailwin mailopen"><div class="winbar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Correo</span></div>
+    <div class="eh"><div class="fr"><b>GesFincas Soporte</b> &lt;soporte@gesfincas-acceso.com&gt;</div><div class="su">⚠ Su sesión ha caducado — vuelva a iniciarla</div></div>
+    <div class="eb">Estimada administradora:
+
+Por motivos de seguridad, su sesión en GesFincas ha caducado. Debe volver a validar su acceso en las próximas 2 horas o su cuenta quedará suspendida y perderá el acceso a los expedientes.
+
+Acceda aquí: <a href="#" id="s2link">https://gesfincas-acceso.com/login</a>
+
+Atentamente,
+El equipo de GesFincas</div></div>
+  ${choices([
+    {ic:'🔑',t:'Pulso el enlace y entro con mi usuario y contraseña',d:'Lo hago siempre, no quiero perder el acceso',act:()=>s2fake()},
+    {ic:'🔎',t:'Me fijo en la dirección del remitente y del enlace',d:'Antes de tocar nada',act:()=>s2check()},
+  ])}`);
+  bind([{act:s2fake},{act:s2check}]);
+  const l=$('#s2link'); if(l)l.onclick=e=>{e.preventDefault();s2fake();};
+}
+function s2check(){
+  render(`<div class="outcome ok"><h3>✅ Buen ojo</h3>El remitente es <code>@gesfincas-<b>acceso</b>.com</code> y el enlace lleva a <code>gesfincas-acceso.com</code>. El dominio real de tu software es <code>gesfincas.es</code>. Es una web falsa para robarte la contraseña.</div>
+  <ul class="tells"><li>Dominio parecido pero <b>no</b> el oficial.</li><li>Urgencia y amenaza (“suspensión en 2 h”).</li><li>Un proveedor serio no te hace “revalidar” por un enlace de correo.</li></ul>
+  <div class="lesson"><b>Hazlo así:</b> nunca entres a tu software por un enlace de un correo. Escribe tú la dirección oficial o usa tu marcador. Y activa el <b>doble factor (2FA)</b>.</div>
+  ${nav('Siguiente →',3)}`);
+  bindNext(3);
+}
+function s2fake(){
+  render(`<div class="kicker">La web se ve idéntica a la de siempre…</div>
+  <div class="win"><div class="browserbar"><div class="urlbox bad"><span class="lock">▲</span>gesfincas-acceso.com/login</div></div>
+    <div class="screen" style="text-align:center">
+      <div style="font:800 22px var(--f-display);color:#2b579a;margin-bottom:4px">GesFincas</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:14px">Acceso profesional para administradores</div>
+      <div style="max-width:300px;margin:0 auto;text-align:left">
+        <label style="font-size:12px;color:var(--muted)">Usuario</label>
+        <input id="s2u" style="width:100%;padding:9px;margin:4px 0 10px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg)" value="maria.diaz">
+        <label style="font-size:12px;color:var(--muted)">Contraseña</label>
+        <input id="s2p" type="password" style="width:100%;padding:9px;margin:4px 0 14px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg)" value="LosRobles2021">
+        <button class="btn" id="s2submit" style="width:100%">Iniciar sesión</button>
+      </div>
+    </div></div>
+  <p class="note" style="color:var(--muted);font-size:13px;margin-top:10px">Pulsa “Iniciar sesión” como harías sin pensar.</p>`);
+  $('#s2submit').onclick=s2bad;
+}
+function s2bad(){
+  fell[2]=true; STATE.acceso=true; hud();
+  render(`<div class="breach"><div class="kicker" style="color:#ffb3b3">Te han hackeado</div>
+    <h2>Acabas de regalar tu contraseña</h2>
+    <div class="big">Esa web no era GesFincas: era del atacante.</div>
+    <pre>Capturado:
+  usuario: maria.diaz
+  contraseña: LosRobles2021
+
+→ El atacante entra en el GesFincas REAL con tus datos.
+→ Accede a los expedientes de 14 comunidades:
+   nombres, DNI, teléfonos, cuentas y deudas de cientos de propietarios.</pre></div>
+  <ul class="tells"><li>La dirección era <code>gesfincas-acceso.com</code>, no <code>gesfincas.es</code>.</li><li>Llegaste por un enlace de correo, no escribiendo tú la web.</li></ul>
+  <div class="lesson"><b>Qué lo habría evitado:</b> entrar siempre por la dirección oficial escrita por ti + <b>doble factor (2FA)</b>: aunque roben la contraseña, sin el segundo código no entran.</div>
+  ${nav('Siguiente: una factura por correo →',3)}`);
+  bindNext(3);
+}
+
+/* 3 · Documento con macro -> ransomware */
+function s3(){
+  setClock('10:05');
+  render(`<div class="kicker">10:05 · Correo con adjunto</div><h2>Una factura del proveedor del ascensor</h2>
+  <p class="sub">Llega un correo con una factura en Word. Parece del proveedor de siempre.</p>
+  <div class="win mailwin mailopen"><div class="winbar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Correo</span></div>
+    <div class="eh"><div class="fr"><b>Ascensores del Norte</b> &lt;facturacion@ascensores-norte.info&gt;</div><div class="su">Factura noviembre — Comunidad Los Robles</div></div>
+    <div class="eb">Buenos días,
+
+Adjuntamos la factura del mantenimiento de noviembre. Rogamos la revise y tramite el pago.
+
+Un saludo.
+<span class="attach" id="s3att"><span class="x">📄</span> Factura_Noviembre_2026.docm <span style="color:var(--muted)">· 64 KB</span></span></div></div>
+  ${choices([
+    {ic:'📂',t:'Abro el adjunto para ver la factura',act:()=>s3doc()},
+    {ic:'📞',t:'Me extraña el formato: llamo al proveedor antes de abrir',d:'Las facturas suelen venir en PDF',act:()=>s3good()},
+  ])}`);
+  bind([{act:s3doc},{act:s3good}]);
+  const a=$('#s3att'); if(a)a.onclick=s3doc;
+}
+function s3good(){
+  render(`<div class="outcome ok"><h3>✅ Bien pensado</h3>Llamas al proveedor: no han enviado esa factura y siempre la mandan en PDF, no en un Word <code>.docm</code> (con macros). El correo venía de <code>ascensores-norte<b>.info</b></code>, no del dominio real.</div>
+  <ul class="tells"><li>Extensión <code>.docm</code>: Word con macros (código que se ejecuta).</li><li>Dominio parecido pero distinto.</li><li>Te meten prisa para “tramitar el pago”.</li></ul>
+  <div class="lesson"><b>Hazlo así:</b> desconfía de los Office que piden “Habilitar contenido”. Abre las facturas en PDF, y ante la duda, confirma por teléfono con el proveedor.</div>
+  ${nav('Siguiente: un cambio de cuenta →',4)}`);
+  bindNext(4);
+}
+function s3doc(){
+  render(`<div class="win doc"><div class="winbar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Factura_Noviembre_2026.docm — Word</span></div>
+    <div class="ribbon">Inicio · Insertar · Diseño · Revisar</div>
+    <div class="secbar">⚠ ADVERTENCIA DE SEGURIDAD: las macros están deshabilitadas. <button class="b" id="s3enable">Habilitar contenido</button></div>
+    <div class="docpage"><div style="text-align:center;color:#999">[ Documento protegido ]<br><br>Para ver la factura correctamente, habilite el contenido.</div></div></div>
+  <p class="note" style="color:var(--muted);font-size:13px;margin-top:10px">El documento “no se ve” hasta que habilitas el contenido. Es la trampa.</p>
+  ${choices([
+    {ic:'✅',t:'Pulso “Habilitar contenido” para poder leerla',act:()=>s3bad()},
+    {ic:'🛑',t:'No habilito nada y cierro el documento',d:'Una factura de verdad no necesita esto',act:()=>s3good()},
+  ])}`);
+  bind([{act:s3bad},{act:s3good}]);
+  const e=$('#s3enable'); if(e)e.onclick=s3bad;
+}
+function s3bad(){
+  fell[3]=true; STATE.exped=true; hud();
+  render(`<div class="breach"><div class="kicker" style="color:#ffb3b3">Te han hackeado</div>
+    <h2>Ransomware: tus expedientes están cifrados</h2>
+    <div class="big">Al habilitar el contenido, la macro descargó y ejecutó el virus.</div>
+    <pre>╔═══════════════════════════════════════════╗
+║  TUS ARCHIVOS HAN SIDO CIFRADOS            ║
+║  Actas, contratos, facturas y datos de     ║
+║  14 comunidades: bloqueados.               ║
+║                                            ║
+║  Para recuperarlos: 2 BTC en 72 horas.     ║
+╚═══════════════════════════════════════════╝</pre></div>
+  <ul class="tells"><li>Un <code>.docm</code> que obliga a “Habilitar contenido”.</li><li>El contenido estaba oculto a propósito para empujarte a hacerlo.</li></ul>
+  <div class="lesson"><b>Qué lo habría evitado:</b> no habilitar macros nunca, abrir facturas en PDF, tener antivirus actualizado y, sobre todo, <b>copias de seguridad</b> para no pagar rescate.</div>
+  ${nav('Siguiente: un cambio de cuenta →',4)}`);
+  bindNext(4);
+}
+
+/* 4 · BEC — cambio de cuenta del proveedor */
+function s4(){
+  setClock('12:30');
+  render(`<div class="kicker">12:30 · Correo</div><h2>El proveedor “cambia de banco”</h2>
+  <p class="sub">Justo cuando ibas a pagar la factura del ascensor (3.200 €), llega esto.</p>
+  <div class="win mailwin mailopen"><div class="winbar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">Correo</span></div>
+    <div class="eh"><div class="fr"><b>Ascensores del Norte</b> &lt;admin@ascensores-norte-sl.com&gt;</div><div class="su">IMPORTANTE: nuevo número de cuenta</div></div>
+    <div class="eb">Estimada María:
+
+Le informamos de que hemos cambiado de entidad bancaria. Le rogamos que el pago de la factura pendiente (3.200 €) lo realice a nuestra nueva cuenta:
+
+  IBAN: ES98 2000 1111 2222 3333 4444
+
+Por favor, actualice nuestros datos para los próximos recibos. Disculpe las molestias y confírmenos cuando esté hecho.
+
+Gracias.</div></div>
+  ${choices([
+    {ic:'💸',t:'Hago la transferencia al nuevo IBAN',d:'Viene del proveedor y tengo la factura pendiente',act:()=>s4bad()},
+    {ic:'📞',t:'Llamo al proveedor al teléfono de siempre para confirmar',d:'Un cambio de cuenta es algo serio',act:()=>s4good()},
+  ])}`);
+  bind([{act:s4bad},{act:s4good}]);
+}
+function s4bad(){
+  fell[4]=true; STATE.dinero+=3200; hud();
+  render(`<div class="breach"><div class="kicker" style="color:#ffb3b3">Te han hackeado</div>
+    <h2>3.200 € de la comunidad, al estafador</h2>
+    <div class="big">Ese correo no era del proveedor: alguien espiaba la cuenta y se coló en el momento justo.</div>
+    <pre>• El IBAN era de una cuenta “mula” del atacante.
+• El dinero sale de la cuenta de la comunidad Los Robles.
+• Cuando el proveedor real reclame su pago, habrá que pagar DOS veces.</pre></div>
+  <ul class="tells"><li>El dominio era <code>ascensores-norte-<b>sl</b>.com</code>, distinto del real.</li><li>Cambio de IBAN + prisa por confirmar: patrón clásico de fraude (BEC).</li></ul>
+  <div class="lesson"><b>Qué lo habría evitado:</b> todo cambio de cuenta se verifica <b>por teléfono</b> al número de siempre del proveedor (no al del correo), y los pagos grandes llevan doble aprobación.</div>
+  ${nav('Ver el resultado del día →',5)}`);
+  bindNext(5);
+}
+function s4good(){
+  render(`<div class="outcome ok"><h3>✅ Perfecto</h3>Llamas al proveedor: no han cambiado de cuenta ni han mandado ese correo. Era un fraude del tipo BEC (suplantación de proveedor). Has salvado 3.200 € de la comunidad.</div>
+  <ul class="tells"><li>Cambios de IBAN “urgentes” por correo: alarma máxima.</li><li>Dominio del remitente ligeramente distinto al real.</li></ul>
+  <div class="lesson"><b>Regla fija:</b> ningún IBAN se cambia por un correo. Siempre verificación telefónica al contacto de siempre + doble aprobación en pagos.</div>
+  ${nav('Ver el resultado del día →',5)}`);
+  bindNext(5);
+}
+
+/* resumen */
+function resumen(){
+  setClock('14:00');
+  const items=[
+    {k:1,n:'WhatsApp · código robado',d:'Secuestro de cuenta'},
+    {k:2,n:'Web falsa de GesFincas',d:'Robo de contraseña del software'},
+    {k:3,n:'Factura con macro',d:'Ransomware en los expedientes'},
+    {k:4,n:'Cambio de cuenta del proveedor',d:'Fraude BEC · 3.200 €'},
+  ];
+  const caidos=Object.keys(fell).length;
+  const cards=items.map(it=>{
+    const f=fell[it.k];
+    return `<div class="scard ${f?'fell':'safe'}"><div class="h">${f?'🔴':'🟢'} ${esc(it.n)}</div><div class="r" style="color:${f?'var(--bad)':'var(--ok)'}">${f?'Caíste · '+esc(it.d):'Lo detectaste'}</div></div>`;
+  }).join('');
+  render(`<div class="kicker">14:00 · Fin de la mañana</div>
+    <h1>Resultado del día</h1>
+    <p class="sub">${caidos===0?'Has sorteado los cuatro ataques. Así se hace: con calma y verificando.':caidos===4?'Has caído en los cuatro. No es por torpeza: están diseñados para colar en un día ajetreado. Por eso se entrena.':'Has caído en '+caidos+' de 4. Cada clic rápido cuenta.'}</p>
+    <div class="scorecard">${cards}</div>
+    <div class="lesson"><b>Las tres reglas que lo paran casi todo:</b><br>1. Un <b>código</b> o una <b>contraseña</b> no se comparten ni se meten por un enlace de correo. Activa el <b>2FA</b>.<br>2. Los <b>cambios de cuenta</b> y los <b>pagos</b> se verifican por teléfono al número de siempre.<br>3. Desconfía de adjuntos que piden “<b>habilitar contenido</b>”; ten copias de seguridad.</div>
+    <p class="sub" style="margin-top:18px">Y lo más importante: que te pase a ti no es cuestión de listo o torpe, sino de tener prisa. El atacante cuenta con eso.</p>
+    <div class="navrow"><button class="btn" id="again">Repetir el simulacro</button><a class="btn ghost" href="../" style="text-decoration:none">Volver al laboratorio</a></div>`);
+  $('#again').onclick=()=>$('#reset').click();
+}
+
+const STEPS=[intro,s1,s2,s3,s4,resumen];
+hud(); go(0);
+})();
+</script>
+</body>
+</html>
