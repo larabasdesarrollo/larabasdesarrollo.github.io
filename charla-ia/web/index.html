@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio web vulnerable</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Laboratorio interactivo y controlado para demostrar y defender vulnerabilidades web clásicas: inyección SQL, XSS, IDOR, fuerza bruta y reconocimiento, mapeadas al OWASP Top 10.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2343c4">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f3f0; --surface:#fafbf9; --fg:#14181d; --muted:#596169; --line:#d6d9d4;
+  --accent:#2343c4; --accent-ink:#fff; --tint:#e3e8f7;
+  --bad:#b4232a; --bad-tint:#fbe5e5; --ok:#1d7a46; --ok-tint:#e1f3e8; --warn:#8a5a00; --warn-tint:#fbf0d9;
+  --term:#0e1116; --term-fg:#d5dbe3;
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340;
+  --bad:#ff7b7f; --bad-tint:#3a1a1c; --ok:#5fd38d; --ok-tint:#14291d; --warn:#f2c266; --warn-tint:#33280f;
+  --term:#07090c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --surface:#161a20; --fg:#e7e9ec; --muted:#98a0a9; --line:#2a3038;
+  --accent:#8199ff; --accent-ink:#0d1020; --tint:#1c2340;
+  --bad:#ff7b7f; --bad-tint:#3a1a1c; --ok:#5fd38d; --ok-tint:#14291d; --warn:#f2c266; --warn-tint:#33280f;
+  --term:#07090c; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body)}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{padding:40px 0 24px;border-bottom:1px solid var(--line)}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{text-decoration:none}
+h1{font:800 clamp(30px,5vw,48px)/1.05 var(--f-display);margin:8px 0 12px;letter-spacing:-.02em}
+h2{font:700 24px/1.2 var(--f-display);margin:0 0 4px}
+h3{font:700 16px var(--f-display);margin:0 0 8px}
+.lede{max-width:680px;color:var(--muted);margin:0}
+.banner{margin-top:16px;padding:10px 14px;border-radius:var(--r);background:var(--warn-tint);color:var(--warn);font-size:13px;max-width:680px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs .wrap{display:flex;gap:4px}
+nav.tabs button{flex:none;border:0;background:none;color:var(--muted);font:600 14px var(--f-body);padding:14px 12px;border-bottom:2px solid transparent;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+nav.tabs .n{font:500 11px var(--f-mono);margin-right:6px;color:var(--accent)}
+section.demo{padding:32px 0 56px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 20px}
+.tag{font:500 11px var(--f-mono);padding:3px 8px;border-radius:99px;background:var(--tint);color:var(--accent)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.browser{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:12px;background:var(--bg)}
+.urlbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border-bottom:1px solid var(--line);font:12.5px var(--f-mono);color:var(--muted);word-break:break-all}
+.urlbar .dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.screen{padding:14px;min-height:150px}
+.app-title{font:700 15px var(--f-display);margin:0 0 10px}
+label.fld{display:block;font-size:13px;margin:8px 0 4px;color:var(--muted)}
+input[type=text],input[type=password],input[type=search],textarea{width:100%;min-width:0;font:14px var(--f-body);padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:600 14px var(--f-body);padding:9px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;white-space:nowrap}
+.btn.ghost{background:none;color:var(--accent)}
+.btn.sm{padding:6px 10px;font-size:12.5px}
+.btn:disabled{opacity:.5;cursor:default}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{font:500 12px var(--f-mono);padding:5px 10px;border-radius:7px;border:1px dashed var(--line);background:none;color:var(--fg);cursor:pointer;text-align:left}
+.chips button:hover{border-color:var(--accent)}
+pre,code,.mono{font-family:var(--f-mono);font-size:12.5px}
+code.inl{background:var(--tint);color:var(--accent);padding:1px 5px;border-radius:4px;word-break:break-word}
+pre.box{margin:0;padding:12px;border-radius:8px;background:var(--term);color:var(--term-fg);white-space:pre-wrap;word-break:break-word;max-height:320px;overflow:auto}
+.log{min-height:120px}
+.log .t-bad{color:#ff8a8f}.log .t-ok{color:#6fe09c}.log .t-dim{color:#7d8794}.log .t-warn{color:#f2c266}.log .t-q{color:#9db4ff}
+.result{padding:10px 12px;border-radius:8px;margin-top:12px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.result.bad{background:var(--bad-tint);color:var(--bad);border:1px solid var(--bad)}
+.result.ok{background:var(--ok-tint);color:var(--ok);border:1px solid var(--ok)}
+.toggle{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;cursor:pointer}
+.toggle input{margin-top:4px;accent-color:var(--accent)}
+.toggle small{display:block;color:var(--muted);font-size:12.5px}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+.state{font:500 11px var(--f-mono);padding:3px 8px;border-radius:99px;display:inline-block}
+.state.vuln{background:var(--bad-tint);color:var(--bad)}
+.state.safe{background:var(--ok-tint);color:var(--ok)}
+table.data{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+table.data th,table.data td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+table.data th{background:var(--tint);color:var(--accent);font-family:var(--f-mono);font-size:12px}
+.xss-out{border:1px dashed var(--line);border-radius:8px;padding:10px;margin-top:10px;min-height:40px;font-size:14px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;padding:10px 0 10px 40px;position:relative;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:10px;width:26px;height:26px;border-radius:50%;background:var(--tint);color:var(--accent);font:700 13px/26px var(--f-mono);text-align:center}
+.guion{max-width:720px}
+.guion h3{margin-top:22px}
+.guion ol,.guion ul{padding-left:20px;margin:6px 0}
+.guion li{margin:4px 0}
+.guion .say{border-left:3px solid var(--accent);padding:4px 12px;margin:8px 0;background:var(--tint);border-radius:0 6px 6px 0}
+.guion .time{font:500 12px var(--f-mono);color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:24px 0 48px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow"><a href="../">← Laboratorio IA</a> · Charla de seguridad</div>
+  <h1>Atacar una web (en laboratorio)</h1>
+  <p class="lede">Cinco vulnerabilidades web clásicas, con el ataque que funciona y el interruptor de la defensa. Todo es una web de mentira simulada en esta misma página, mapeada al OWASP Top 10.</p>
+  <p class="banner"><b>Entorno controlado.</b> No se ataca ningún sistema real: no hay peticiones de red, la “base de datos” y el “servidor” viven en este navegador. Los dominios <code>*.example</code> son ficticios por norma (RFC 2606). Hacer esto contra una web ajena sin permiso es delito.</p>
+</div></header>
+
+<nav class="tabs" aria-label="Demostraciones"><div class="wrap" role="tablist">
+  <button role="tab" data-t="w1" aria-selected="true"><span class="n">01</span>Inyección SQL</button>
+  <button role="tab" data-t="w2" aria-selected="false"><span class="n">02</span>XSS</button>
+  <button role="tab" data-t="w3" aria-selected="false"><span class="n">03</span>IDOR</button>
+  <button role="tab" data-t="w4" aria-selected="false"><span class="n">04</span>Fuerza bruta</button>
+  <button role="tab" data-t="w5" aria-selected="false"><span class="n">05</span>Reconocimiento</button>
+  <button role="tab" data-t="g" aria-selected="false"><span class="n">★</span>Guion</button>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ============ W1 · SQLi ============ -->
+<section class="demo" id="w1">
+  <h2>Inyección SQL: saltarse el login sin contraseña</h2>
+  <div class="meta"><span class="tag">OWASP A03 Injection</span><span class="tag" id="w1state"></span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="browser">
+        <div class="urlbar"><span class="dot"></span>https://tienda.example/login</div>
+        <div class="screen">
+          <p class="app-title">Panel de administración</p>
+          <label class="fld">Usuario</label><input type="text" id="w1u" value="admin" autocomplete="off">
+          <label class="fld">Contraseña</label><input type="text" id="w1p" autocomplete="off" placeholder="no la sabes…">
+          <div class="row" style="margin-top:12px"><button class="btn" id="w1go">Entrar</button></div>
+          <div id="w1res"></div>
+        </div>
+      </div>
+      <div class="chips">
+        <button data-p="' OR '1'='1' -- ">' OR '1'='1' -- </button>
+        <button data-p="' OR 1=1 -- ">' OR 1=1 -- </button>
+        <button data-p="admin' -- ">admin' -- </button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="w1fix"> <span>Usar consultas parametrizadas <small>La contraseña se envía como dato, nunca concatenada dentro del SQL.</small></span></label>
+    </div>
+    <div class="card">
+      <h3>Lo que hace el servidor</h3>
+      <pre class="box log" id="w1log"><span class="t-dim">Esperando el formulario…</span></pre>
+      <p class="note">Con la entrada normal, la consulta busca ese usuario y esa contraseña. El <code class="inl">'</code> cierra la cadena y <code class="inl">OR '1'='1'</code> hace que la condición sea siempre cierta; <code class="inl">--</code> comenta el resto. El servidor devuelve la primera fila: el administrador.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ W2 · XSS ============ -->
+<section class="demo" id="w2" hidden>
+  <h2>XSS reflejado: robar la sesión de quien abre un enlace</h2>
+  <div class="meta"><span class="tag">OWASP A03 Injection (XSS)</span><span class="tag" id="w2state"></span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="browser">
+        <div class="urlbar"><span class="dot"></span><span id="w2url">https://blog.example/buscar?q=…</span></div>
+        <div class="screen">
+          <p class="app-title">Buscar en el blog</p>
+          <input type="search" id="w2q" value="zapatillas" autocomplete="off">
+          <div class="row" style="margin-top:10px"><button class="btn" id="w2go">Buscar</button></div>
+          <div class="xss-out" id="w2out"></div>
+        </div>
+      </div>
+      <div class="chips">
+        <button data-p="<b>hola</b>">&lt;b&gt;hola&lt;/b&gt;</button>
+        <button data-p="<img src=x onerror=&quot;robarCookie()&quot;>">&lt;img src=x onerror=robarCookie()&gt;</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="w2fix"> <span>Escapar la salida (y aplicar CSP) <small>Los caracteres <code class="inl">&lt;</code> y <code class="inl">&gt;</code> se muestran como texto, no como HTML.</small></span></label>
+    </div>
+    <div class="card">
+      <h3>Servidor del atacante · <span class="mono">ladron.example</span></h3>
+      <pre class="box log" id="w2log"><span class="t-dim">Escuchando…</span></pre>
+      <p class="note">La página mete lo que buscas dentro del HTML sin limpiarlo. Si en vez de texto metes una etiqueta, el navegador la ejecuta. El atacante reparte el enlace con el <code class="inl">q=</code> ya preparado; basta con que la víctima lo abra para que su cookie de sesión viaje al atacante.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ W3 · IDOR ============ -->
+<section class="demo" id="w3" hidden>
+  <h2>IDOR: ver la factura de otro cambiando un número</h2>
+  <div class="meta"><span class="tag">OWASP A01 Broken Access Control</span><span class="tag" id="w3state"></span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="browser">
+        <div class="urlbar"><span class="dot"></span>https://facturas.example/ver?id=<input type="text" id="w3id" value="1001" style="width:70px;display:inline-block;padding:2px 6px;font:12.5px var(--f-mono)"></div>
+        <div class="screen" id="w3screen"></div>
+      </div>
+      <div class="chips">
+        <button data-id="1001">id=1001 (la tuya)</button>
+        <button data-id="1002">id=1002</button>
+        <button data-id="1003">id=1003</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="w3fix"> <span>Comprobar de quién es el recurso <small>El servidor verifica que la factura pertenece a la sesión que la pide.</small></span></label>
+    </div>
+    <div class="card">
+      <h3>Sesión actual</h3>
+      <pre class="box log" id="w3log"></pre>
+      <p class="note">Has iniciado sesión como <b>Tu Empresa S.L.</b> (usuario 1001). La aplicación muestra cualquier factura por su número sin comprobar que sea tuya. Subir o bajar el número deja leer las de otros clientes. No hace falta ninguna herramienta: solo editar la URL.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ W4 · Fuerza bruta ============ -->
+<section class="demo" id="w4" hidden>
+  <h2>Fuerza bruta: adivinar una contraseña débil</h2>
+  <div class="meta"><span class="tag">OWASP A07 Identificación y autenticación</span><span class="tag" id="w4state"></span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="browser">
+        <div class="urlbar"><span class="dot"></span>https://correo.example/login</div>
+        <div class="screen">
+          <p class="app-title">Acceso al correo · <span class="mono">pedro@correo.example</span></p>
+          <p class="note" style="margin-top:0">Su contraseña real es <code class="inl">123456</code> (de las más usadas del mundo).</p>
+          <div class="row" style="margin-top:10px"><button class="btn" id="w4go">Lanzar ataque de diccionario</button><button class="btn ghost sm" id="w4reset">Reiniciar</button></div>
+        </div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="w4fix"> <span>Límite de intentos + contraseña fuerte <small>Bloqueo tras 5 fallos, hashing lento y 2FA.</small></span></label>
+    </div>
+    <div class="card">
+      <h3>Intentos del atacante</h3>
+      <pre class="box log" id="w4log"><span class="t-dim">$ hydra -l pedro -P rockyou.txt correo.example http-post</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ W5 · Recon ============ -->
+<section class="demo" id="w5" hidden>
+  <h2>Reconocimiento: lo que una web regala antes del ataque</h2>
+  <div class="meta"><span class="tag">OWASP A05 Mala configuración</span><span class="tag" id="w5state"></span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="browser">
+        <div class="urlbar"><span class="dot"></span>https://miempresa.example/</div>
+        <div class="screen">
+          <p class="app-title">Escáner de reconocimiento (simulado)</p>
+          <p class="note" style="margin-top:0">Sin tocar nada protegido, solo mirando lo que el servidor publica.</p>
+          <div class="row" style="margin-top:10px"><button class="btn" id="w5go">Escanear</button></div>
+        </div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="w5fix"> <span>Endurecer la configuración <small>Ocultar versiones, cabeceras de seguridad, quitar <code class="inl">.git</code> y <code class="inl">.env</code>, desactivar el listado de directorios.</small></span></label>
+    </div>
+    <div class="card">
+      <h3>Resultado del escaneo</h3>
+      <pre class="box log" id="w5log"><span class="t-dim">Pulsa «Escanear».</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUION ============ -->
+<section class="demo guion" id="g" hidden>
+  <h2>Guion de la parte web</h2>
+  <p class="note" style="margin-top:4px">Unos 25–30 minutos. Encaja después del laboratorio de IA o como charla propia. Idea central: <b>casi todo ataque web nace de confiar en datos que vienen del usuario</b> (el formulario, la URL, la cabecera).</p>
+
+  <h3>0 · Apertura <span class="time">2 min</span></h3>
+  <ol>
+    <li>«Una web recibe datos de desconocidos todo el rato. Vamos a ver qué pasa cuando esos datos son maliciosos.»</li>
+    <li>Aviso legal: todo es un laboratorio; hacerlo contra una web ajena sin permiso por escrito es delito (arts. 197 bis y 264 del Código Penal).</li>
+  </ol>
+
+  <h3>1 · Inyección SQL <span class="time">6 min</span></h3>
+  <ol>
+    <li>Entra con una contraseña inventada: falla.</li>
+    <li>Pulsa el botón <code class="inl">' OR '1'='1' -- </code>. Entras como administrador. Enseña la consulta que se forma.</li>
+    <li>Activa «consultas parametrizadas» y repite: ahora la inyección se trata como texto y falla.</li>
+  </ol>
+  <p class="say">Nunca construyas SQL pegando texto del usuario. Usa consultas parametrizadas siempre.</p>
+
+  <h3>2 · XSS reflejado <span class="time">6 min</span></h3>
+  <ol>
+    <li>Busca algo normal: se ve bien.</li>
+    <li>Pulsa el payload <code class="inl">&lt;img ... onerror&gt;</code>. El panel del atacante recibe la cookie de sesión.</li>
+    <li>Activa «escapar la salida» y repite: el payload aparece como texto inofensivo.</li>
+  </ol>
+  <p class="say">Escapa siempre lo que pintas en la página y añade una CSP. Con la cookie de sesión, el atacante entra sin contraseña.</p>
+
+  <h3>3 · IDOR <span class="time">5 min</span></h3>
+  <ol>
+    <li>Estás en tu factura (id=1001). Cambia el número a 1002 y 1003: ves las de otros clientes.</li>
+    <li>Activa «comprobar propiedad» y repite: responde 403.</li>
+  </ol>
+  <p class="say">Que no se vea un botón no significa que esté protegido. Comprueba el permiso en el servidor, en cada petición.</p>
+
+  <h3>4 · Fuerza bruta <span class="time">5 min</span></h3>
+  <ol>
+    <li>Lanza el ataque de diccionario: acierta <code class="inl">123456</code> en pocos intentos.</li>
+    <li>Activa «límite de intentos + contraseña fuerte»: se bloquea a los 5 fallos.</li>
+  </ol>
+  <p class="say">Contraseñas largas y únicas, límite de intentos, hashing lento y 2FA. El gestor de contraseñas no es opcional.</p>
+
+  <h3>5 · Reconocimiento <span class="time">4 min</span></h3>
+  <ol>
+    <li>Escanea: aparecen versiones antiguas, <code class="inl">/.git/</code> y <code class="inl">/.env</code> accesibles, listado de directorios.</li>
+    <li>Activa «endurecer la configuración» y repite: ya no se filtra nada útil.</li>
+  </ol>
+  <p class="say">Antes de atacar, el atacante recoge. No publiques versiones, ficheros internos ni <code class="inl">.env</code>.</p>
+
+  <h3>6 · Cierre <span class="time">2 min</span></h3>
+  <ol>
+    <li>Todo dato del usuario es sospechoso hasta que lo validas.</li>
+    <li>Valida en la entrada, escapa en la salida, comprueba permisos en el servidor.</li>
+    <li>Para practicar legalmente: monta tu propio laboratorio.</li>
+  </ol>
+  <p class="note">Para practicar sobre entornos pensados para ello: <a href="https://portswigger.net/web-security" target="_blank" rel="noopener">PortSwigger Web Security Academy</a> · <a href="https://owasp.org/www-project-juice-shop/" target="_blank" rel="noopener">OWASP Juice Shop</a> · <a href="https://github.com/digininja/DVWA" target="_blank" rel="noopener">DVWA</a>. Herramientas: Burp Suite, OWASP ZAP, nmap, nikto, sqlmap (solo sobre sistemas propios o autorizados).</p>
+</section>
+</main>
+
+<footer><div class="wrap">Material didáctico para entornos controlados. Las técnicas se muestran para aprender a defenderse; aplícalas solo sobre sistemas propios o con autorización por escrito. Referencia: OWASP Top 10:2021. · <a href="../">Volver al laboratorio de IA</a></div></footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* pestañas */
+$$('nav.tabs button').forEach(b=>b.onclick=()=>{
+  $$('nav.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  $$('section.demo').forEach(s=>s.hidden=s.id!==b.dataset.t);
+  try{localStorage.setItem('web-tab',b.dataset.t)}catch(e){}
+});
+try{const t=localStorage.getItem('web-tab'); if(t){const b=$(`nav.tabs button[data-t="${t}"]`); b&&b.click();}}catch(e){}
+
+function setState(id,fixed){const el=$(id); el.className='tag state '+(fixed?'safe':'vuln'); el.textContent=fixed?'● protegido':'● vulnerable';}
+
+/* ---------- W1 · SQLi ---------- */
+function w1run(){
+  const u=$('#w1u').value, p=$('#w1p').value, fix=$('#w1fix').checked;
+  const L=$('#w1log'), R=$('#w1res');
+  if(fix){
+    L.innerHTML=`<span class="t-q">SELECT * FROM usuarios\nWHERE user = ? AND pass = ?</span>\n<span class="t-dim">params = [${esc(JSON.stringify(u))}, ${esc(JSON.stringify(p))}]</span>\n\n`;
+    const ok = u==='admin' && p==='s3cret!';
+    L.innerHTML += ok?`<span class="t-ok">1 fila → acceso concedido</span>`:`<span class="t-bad">0 filas → acceso denegado</span>`;
+    R.className='result '+(ok?'ok':'bad'); R.textContent=ok?'✅ Acceso correcto':'⛔ Usuario o contraseña incorrectos';
+  } else {
+    const q=`SELECT * FROM usuarios\nWHERE user = '${u}' AND pass = '${p}'`;
+    L.innerHTML=`<span class="t-q">${esc(q)}</span>\n\n`;
+    const inj=/'\s*(or|OR)\s+('?\w'?\s*=\s*'?\w'?|1\s*=\s*1)|'\s*--|admin'\s*--/.test(p);
+    const ok = inj || (u==='admin'&&p==='s3cret!');
+    if(inj) L.innerHTML+=`<span class="t-warn">La comilla rompe la consulta; la condición siempre es cierta.</span>\n`;
+    L.innerHTML += ok?`<span class="t-bad">→ devuelve admin (primera fila). ACCESO CONCEDIDO</span>`:`<span class="t-bad">0 filas → acceso denegado</span>`;
+    R.className='result '+(ok?'bad':'bad'); R.style.borderColor=ok?'':'';
+    if(ok){R.className='result '+(inj?'bad':'ok');R.textContent=inj?'🔓 ¡Dentro como administrador sin saber la contraseña!':'✅ Acceso correcto';}
+    else {R.className='result bad';R.textContent='⛔ Usuario o contraseña incorrectos';}
+  }
+}
+$('#w1go').onclick=w1run;
+$$('#w1 .chips button').forEach(b=>b.onclick=()=>{$('#w1p').value=b.dataset.p;w1run();});
+$('#w1fix').onchange=()=>{setState('#w1state',$('#w1fix').checked);w1run();};
+setState('#w1state',false);
+
+/* ---------- W2 · XSS ---------- */
+window.robarCookie=function(){
+  const c='sesion=4e8f2a91c7; usuario=pedro';
+  $('#w2log').innerHTML=`<span class="t-dim">Escuchando…</span>\n<span class="t-bad">GET /c?${esc(c)}</span>\n<span class="t-dim">  desde la víctima que abrió el enlace</span>\n\n<span class="t-bad">Cookie de sesión capturada:\n  ${esc(c)}</span>\n\n<span class="t-dim">El atacante la pega en su navegador y entra como pedro.</span>`;
+};
+function w2run(){
+  const q=$('#w2q').value, fix=$('#w2fix').checked;
+  $('#w2url').textContent='https://blog.example/buscar?q='+encodeURIComponent(q);
+  if(fix){ $('#w2out').textContent='Resultados para: '+q+' — 0 coincidencias'; $('#w2log').innerHTML='<span class="t-dim">Escuchando…</span>\n<span class="t-ok">(sin peticiones: la etiqueta se mostró como texto)</span>'; }
+  else { $('#w2out').innerHTML='Resultados para: '+q+' — 0 coincidencias'; if(!/<[a-z]/i.test(q)) $('#w2log').innerHTML='<span class="t-dim">Escuchando…</span>'; }
+}
+$('#w2go').onclick=w2run;
+$$('#w2 .chips button').forEach(b=>b.onclick=()=>{$('#w2q').value=b.dataset.p;w2run();});
+$('#w2fix').onchange=()=>{setState('#w2state',$('#w2fix').checked);w2run();};
+setState('#w2state',false); w2run();
+
+/* ---------- W3 · IDOR ---------- */
+const FACT={
+ '1001':{n:'Tu Empresa S.L.',cif:'B33xxxxxx',tot:'1.210,00 €',con:'Mantenimiento web noviembre'},
+ '1002':{n:'Construcciones Oviedo S.A.',cif:'A33111222',tot:'18.450,00 €',con:'Reforma oficinas'},
+ '1003':{n:'Clínica Dental Gijón',cif:'B33444555',tot:'3.900,00 €',con:'Campaña publicidad'}
+};
+function w3run(){
+  const id=$('#w3id').value.trim(), fix=$('#w3fix').checked, S=$('#w3screen');
+  $('#w3log').innerHTML='<span class="t-dim">usuario = 1001 · Tu Empresa S.L.</span>';
+  const f=FACT[id];
+  if(!f){ S.innerHTML='<div class="result bad">404 · No existe la factura '+esc(id)+'</div>'; return; }
+  if(fix && id!=='1001'){ S.innerHTML='<div class="result ok">403 · Esta factura no es de tu cuenta</div>'; return; }
+  const mine=id==='1001';
+  S.innerHTML=`<p class="app-title">Factura #${esc(id)}</p>`+
+    (mine?'':'<div class="result bad" style="margin:0 0 10px">⚠ Esta factura es de OTRO cliente</div>')+
+    `<table class="data"><tr><th>Cliente</th><td>${esc(f.n)}</td></tr><tr><th>CIF</th><td>${esc(f.cif)}</td></tr><tr><th>Concepto</th><td>${esc(f.con)}</td></tr><tr><th>Total</th><td>${esc(f.tot)}</td></tr></table>`;
+}
+$('#w3id').oninput=w3run;
+$$('#w3 .chips button').forEach(b=>b.onclick=()=>{$('#w3id').value=b.dataset.id;w3run();});
+$('#w3fix').onchange=()=>{setState('#w3state',$('#w3fix').checked);w3run();};
+setState('#w3state',false); w3run();
+
+/* ---------- W4 · fuerza bruta ---------- */
+const DICT=['password','qwerty','111111','iloveyou','admin','abc123','pedro2020','123456'];
+let w4busy=false;
+async function w4run(){
+  if(w4busy)return; w4busy=true; $('#w4go').disabled=true;
+  const fix=$('#w4fix').checked, L=$('#w4log');
+  L.innerHTML='<span class="t-dim">$ hydra -l pedro -P rockyou.txt correo.example http-post</span>\n';
+  let n=0;
+  for(const pw of DICT){
+    n++; await sleep(260);
+    if(fix && n>5){ L.innerHTML+=`<span class="t-ok">🔒 Cuenta bloqueada tras 5 intentos fallidos. Ataque detenido.</span>\n<span class="t-dim">Además la contraseña real sería larga y con 2FA.</span>\n`; break; }
+    const hit = pw==='123456';
+    L.innerHTML+=(hit?`<span class="t-bad">[${n}] ${pw}  ← ¡CORRECTA!  ✓ acceso a la cuenta</span>`:`<span class="t-dim">[${n}] ${pw}  ✗</span>`)+'\n';
+    L.scrollTop=1e6;
+    if(hit && !fix) break;
+    if(hit && fix) break;
+  }
+  w4busy=false; $('#w4go').disabled=false;
+}
+$('#w4go').onclick=w4run;
+$('#w4reset').onclick=()=>{$('#w4log').innerHTML='<span class="t-dim">$ hydra -l pedro -P rockyou.txt correo.example http-post</span>';};
+$('#w4fix').onchange=()=>setState('#w4state',$('#w4fix').checked);
+setState('#w4state',false);
+
+/* ---------- W5 · recon ---------- */
+async function w5run(){
+  const fix=$('#w5fix').checked, L=$('#w5log'); L.innerHTML='';
+  const line=async(h,ms=260)=>{await sleep(ms);L.innerHTML+=h+'\n';L.scrollTop=1e6;};
+  await line('<span class="t-dim">$ escaneando miempresa.example …</span>',120);
+  if(fix){
+    await line('<span class="t-ok">Server: (oculto)</span>');
+    await line('<span class="t-ok">Cabeceras: HSTS, CSP, X-Frame-Options presentes</span>');
+    await line('<span class="t-ok">/.git/  → 404</span>');
+    await line('<span class="t-ok">/.env   → 404</span>');
+    await line('<span class="t-ok">Listado de directorios: desactivado</span>');
+    await line('\n<span class="t-ok">✓ Poco que aprovechar. Superficie mínima.</span>');
+  } else {
+    await line('<span class="t-warn">Server: Apache/2.4.29 (Ubuntu)  ← versión con fallos conocidos</span>');
+    await line('<span class="t-warn">X-Powered-By: PHP/5.6.40  ← sin soporte desde 2018</span>');
+    await line('<span class="t-bad">/.git/  → 200  (código fuente descargable)</span>');
+    await line('<span class="t-bad">/.env   → 200  DB_PASSWORD=Sup3rS3cret  API_KEY=sk_live_…</span>');
+    await line('<span class="t-bad">/backup/  → listado de directorios ABIERTO</span>');
+    await line('\n<span class="t-bad">✗ El atacante ya tiene credenciales y el código, sin «atacar» nada.</span>');
+  }
+}
+$('#w5go').onclick=w5run;
+$('#w5fix').onchange=()=>setState('#w5state',$('#w5fix').checked);
+setState('#w5state',false);
+})();
+</script>
+</body>
+</html>
